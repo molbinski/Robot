@@ -1,0 +1,75 @@
+*** Settings ***
+Library  SSHLibrary
+Library  Selenium2Library
+
+*** Variables ***
+${zmienna1}  test12345
+${REMOTE_HOST}   127.0.0.1
+${Uzytkownik}    tester
+${haslo}  tester
+${login_xpath}   //*[@id="login"]
+${haslo_xpath}   //*[@id="password"]
+${zaloguj_button}  //*[@id="btnSubmit"]
+${login_wp}    testerwsb_t1
+${haslo_wp}    adam1234
+
+*** Test Cases ***
+sprawdzenie funkcjonalnosci robota
+  Log to Console    GLORY GLORY MAN UNITED
+test wpisania keyworda
+  my log
+test wpisania keyworda z parametrem
+  my log par   /home/tester/robot/log.html
+test zmiennej
+  zmienna  zmienna1
+Restore Test Environment
+  Open connection   ${REMOTE_HOST}
+  Login    ${Uzytkownik}    ${haslo}
+wywolanie komendy pokazujacej parametry mojego komputera i sprawdzenie czy dziala
+    ustawienie polaczenia z komputerem testowym
+    logowanie z uzyciem zmiennych
+    wywolanie komendy i sprawdzenie poprawnosci wynikow
+    zamkniecie polaczenia
+Test logowania do poczty
+  otwarcie przegladarki
+  przejscie na strone poczty
+  wprowadzenie loginu
+  wprowadzenie hasla
+  zalogowanie sie
+  sprawdzenie czy jestesmy zalogowani
+  wylaczenie przegladarki
+
+
+*** Keywords ***
+My log
+  log to console    raz dwa trzy
+My log par
+  [Arguments]  ${path}
+  log to console  ${path}
+zmienna
+  [Arguments]   ${zmienna}
+  log to console  ${zmienna}
+ustawienie polaczenia z komputerem testowym
+  Open Connection   ${REMOTE_HOST}
+logowanie z uzyciem zmiennych
+  Login   ${Uzytkownik}   ${haslo}
+wywolanie komendy i sprawdzenie poprawnosci wynikow
+  ${rc}   Execute Command  uname -a
+  Should Not Be Empty  ${rc}
+  Should Contain   ${rc}  GNU/Linux
+zamkniecie polaczenia
+  close all connections
+otwarcie przegladarki
+  Open Browser   http://poczta.wp.pl
+przejscie na strone poczty
+  Go To   http://poczta.wp.pl
+wprowadzenie loginu
+  Input Text    ${login_xpath}    ${login_wp}
+wprowadzenie hasla
+  Input Text    ${haslo_xpath}    ${haslo_wp}
+zalogowanie sie
+  Click Element  ${zaloguj_button}
+sprawdzenie czy jestesmy zalogowani
+  Page Should Contain    Odebrane
+wylaczenie przegladarki
+  Close All browsers
